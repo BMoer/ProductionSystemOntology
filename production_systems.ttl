@@ -1,0 +1,582 @@
+@prefix : <http://ontologies.ift.at/production_systems.ttl/0.4#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://ontologies.ift.at/production_systems.ttl/0.4> .
+
+<http://ontologies.ift.at/production_systems.ttl/0.4> rdf:type owl:Ontology ;
+                                                       owl:versionIRI <http://ontologies.ift.at/production_systems.ttl/0.4> ;
+                                                       owl:imports <http://www.w3.org/2006/time#2016> ,
+                                                                   <http://www.w3.org/ns/ssn/> ;
+                                                       dc:description "The IFT Production Systems Ontology defines a vocabulary for describing industrial production processes."@en ;
+                                                       owl:versionInfo 0.4 ;
+                                                       dc:date "2017-03-31"^^xsd:date ;
+                                                       dc:creator "Iman Ayatollahi" ,
+                                                                  "Thomas Weiler" ;
+                                                       rdfs:comment "The IFT Production Systems Ontology defines a vocabulary for describing industrial production processes."@en ;
+                                                       dc:creator "Benjamin Moerzinger" ,
+                                                                  "Thomas Trautner" ;
+                                                       rdfs:label "IFT Production Systems Ontology"@en ;
+                                                       dc:title "IFT Production Systems Ontology"@en .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#compatibleWith
+:compatibleWith rdf:type owl:ObjectProperty ;
+                rdfs:domain [ rdf:type owl:Restriction ;
+                              owl:onProperty :compatibleWith ;
+                              owl:someValuesFrom :Fixture
+                            ] .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#composedOf
+:composedOf rdf:type owl:ObjectProperty ;
+            rdfs:subPropertyOf owl:topObjectProperty ;
+            rdfs:range :Resource .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#createsFeature
+:createsFeature rdf:type owl:ObjectProperty ;
+                rdfs:domain [ rdf:type owl:Restriction ;
+                              owl:onProperty :createsFeature ;
+                              owl:someValuesFrom :ManufacturingProcess
+                            ] ;
+                rdfs:range [ rdf:type owl:Restriction ;
+                             owl:onProperty :createsFeature ;
+                             owl:someValuesFrom :GeometricFeature
+                           ] .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#defines
+:defines rdf:type owl:ObjectProperty ;
+         rdfs:subPropertyOf owl:topObjectProperty ;
+         rdfs:domain [ rdf:type owl:Restriction ;
+                       owl:onProperty :defines ;
+                       owl:someValuesFrom :ManufacturingExperiment
+                     ] ;
+         rdfs:range [ rdf:type owl:Restriction ;
+                      owl:onProperty :defines ;
+                      owl:someValuesFrom :ExperimentalRig
+                    ] .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#executesProcess
+:executesProcess rdf:type owl:ObjectProperty ;
+                 owl:inverseOf :isExecutedBy ;
+                 rdfs:domain :ExperimentalRig ,
+                             :ProductionMachine ;
+                 rdfs:range :ManufacturingProcess .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#hasPhase
+:hasPhase rdf:type owl:ObjectProperty ;
+          rdfs:domain :ManufacturingProcess .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#isExecutedBy
+:isExecutedBy rdf:type owl:ObjectProperty .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#isFeatureOf
+:isFeatureOf rdf:type owl:ObjectProperty ;
+             rdfs:subPropertyOf owl:topObjectProperty ;
+             rdfs:domain :GeometricFeature ;
+             rdfs:range :Resource .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#usesTool
+:usesTool rdf:type owl:ObjectProperty ;
+          rdfs:subPropertyOf owl:topObjectProperty ;
+          rdfs:domain :ManufacturingProcess ;
+          rdfs:range :Tool .
+
+
+###  http://www.w3.org/ns/ssn/hasSubSystem
+<http://www.w3.org/ns/ssn/hasSubSystem> rdfs:domain [ rdf:type owl:Restriction ;
+                                                      owl:onProperty <http://www.w3.org/ns/ssn/hasSubSystem> ;
+                                                      owl:someValuesFrom <http://www.w3.org/ns/ssn/System>
+                                                    ] ;
+                                        rdfs:range [ rdf:type owl:Restriction ;
+                                                     owl:onProperty <http://www.w3.org/ns/ssn/hasSubSystem> ;
+                                                     owl:someValuesFrom <http://www.w3.org/ns/ssn/System>
+                                                   ] .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#cuttingSpeed
+:cuttingSpeed rdf:type owl:DatatypeProperty ;
+              rdfs:domain :Cutting ,
+                          :ManufacturingProcessPhase .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#datatable
+:datatable rdf:type owl:DatatypeProperty .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#diameter
+:diameter rdf:type owl:DatatypeProperty .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#feedRate
+:feedRate rdf:type owl:DatatypeProperty ;
+          rdfs:domain :Cutting ,
+                      :DrillingProcess ,
+                      :ManufacturingProcessPhase ,
+                      :MillingProcess .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#feedRatePerTooth
+:feedRatePerTooth rdf:type owl:DatatypeProperty ;
+                  rdfs:domain :DrillingProcess ,
+                              :ManufacturingProcessPhase ,
+                              :MillingProcess .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#hasSamplingrate
+:hasSamplingrate rdf:type owl:DatatypeProperty ;
+                 rdfs:subPropertyOf owl:topDataProperty ;
+                 rdf:type owl:FunctionalProperty ;
+                 rdfs:domain <http://www.w3.org/ns/sosa/Sensor> ;
+                 rdfs:range xsd:float .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#holenumber
+:holenumber rdf:type owl:DatatypeProperty ;
+            rdfs:domain :Borehole ;
+            rdfs:range xsd:integer .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#peckingAmplitude
+:peckingAmplitude rdf:type owl:DatatypeProperty ;
+                  rdfs:domain :ManufacturingProcessPhase ,
+                              :VibrationAssistedDrilling .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#peckingFrequency
+:peckingFrequency rdf:type owl:DatatypeProperty ;
+                  rdfs:domain :ManufacturingProcessPhase ,
+                              :VibrationAssistedDrilling .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#positionColumn
+:positionColumn rdf:type owl:DatatypeProperty ;
+                rdfs:domain :Borehole ;
+                rdfs:range xsd:integer .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#positionRow
+:positionRow rdf:type owl:DatatypeProperty ;
+             rdfs:domain :Borehole ;
+             rdfs:range xsd:integer .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#rawMaterial
+:rawMaterial rdf:type owl:DatatypeProperty .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#thickness
+:thickness rdf:type owl:DatatypeProperty .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#toolRotationSpeed
+:toolRotationSpeed rdf:type owl:DatatypeProperty ;
+                   rdfs:domain :DrillingProcess ,
+                               :ManufacturingProcessPhase ,
+                               :MillingProcess .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#vendor
+:vendor rdf:type owl:DatatypeProperty .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#AccelerationSensor
+:AccelerationSensor rdf:type owl:Class ;
+                    rdfs:subClassOf :TimeSeriesSensor .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Accelleration
+:Accelleration rdf:type owl:Class ;
+               rdfs:subClassOf :TimeSeriesProperty ;
+               rdfs:label "Acceleration"@en ,
+                          "Beschleunigung"@de .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#AcousticPressure
+:AcousticPressure rdf:type owl:Class ;
+                  rdfs:subClassOf :TimeSeriesProperty ;
+                  rdfs:label "Acoustic Pressure"@en ,
+                             "Schalldruck"@de .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#AdjustProperties
+:AdjustProperties rdf:type owl:Class ;
+                  rdfs:subClassOf :ManufacturingProcess ;
+                  rdfs:isDefinedBy "DIN 8550" ;
+                  rdfs:label "Adjust Properties"@en ,
+                             "Stoffeigenschaften ändern"@de .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Aluminium
+:Aluminium rdf:type owl:Class ;
+           rdfs:subClassOf :RawMaterial .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Axis
+:Axis rdf:type owl:Class ;
+      rdfs:subClassOf <http://www.w3.org/ns/sosa/Actuator> ;
+      rdfs:label "Achse"@de ,
+                 "Axis"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Bar
+:Bar rdf:type owl:Class ;
+     rdfs:subClassOf :SemiManufacturedProduct .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Block
+:Block rdf:type owl:Class ;
+       rdfs:subClassOf :SemiManufacturedProduct .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Borehole
+:Borehole rdf:type owl:Class ;
+          rdfs:subClassOf :GeometricFeature ;
+          rdfs:label "Bohrloch"@de ,
+                     "Borehole"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#CFRP
+:CFRP rdf:type owl:Class ;
+      rdfs:subClassOf :RawMaterial .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#CoatedDrill
+:CoatedDrill rdf:type owl:Class ;
+             rdfs:subClassOf :Drill ;
+             rdfs:label "Beschichteter Bohrer"@de ,
+                        "Coated Drill"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Coating
+:Coating rdf:type owl:Class ;
+         rdfs:subClassOf :ManufacturingProcess ;
+         rdfs:isDefinedBy "DIN 8550" ;
+         rdfs:label "Beschichten"@de ,
+                    "Coating"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Cutting
+:Cutting rdf:type owl:Class ;
+         rdfs:subClassOf :ManufacturingProcess ;
+         rdfs:isDefinedBy "DIN 8550" ;
+         rdfs:label "Cutting"@en ,
+                    "Trennen"@de .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Drill
+:Drill rdf:type owl:Class ;
+       rdfs:subClassOf :Tool ;
+       rdfs:label "Bohrer"@de ,
+                  "Drill"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#DrillingMachine
+:DrillingMachine rdf:type owl:Class ;
+                 rdfs:subClassOf :ProductionMachine ;
+                 rdfs:label "Bohrmaschine"@de ,
+                            "Drilling Machine"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#DrillingProcess
+:DrillingProcess rdf:type owl:Class ;
+                 rdfs:subClassOf :Cutting ;
+                 rdfs:label "Bohrprozess"@de ,
+                            "Drilling Process"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#ExperimentalRig
+:ExperimentalRig rdf:type owl:Class ;
+                 rdfs:subClassOf <http://www.w3.org/2006/time#TemporalEntity> ,
+                                 <http://www.w3.org/ns/sosa/Platform> ;
+                 rdfs:label "Experimental Setup"@en ,
+                            "Versuchsaufbau"@de .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Fixture
+:Fixture rdf:type owl:Class ;
+         rdfs:subClassOf <http://www.w3.org/ns/ssn/System> ;
+         rdfs:label "Aufspannvorrichtung"@de ,
+                    "Fixture"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#FlowSensor
+:FlowSensor rdf:type owl:Class ;
+            rdfs:subClassOf :TimeSeriesSensor .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Force
+:Force rdf:type owl:Class ;
+       rdfs:subClassOf :TimeSeriesProperty ;
+       rdfs:label "Force"@en ,
+                  "Kraft"@de .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#ForceSensor
+:ForceSensor rdf:type owl:Class ;
+             rdfs:subClassOf :TimeSeriesSensor .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Forming
+:Forming rdf:type owl:Class ;
+         rdfs:subClassOf :ManufacturingProcess ;
+         rdfs:isDefinedBy "DIN 8550" ;
+         rdfs:label "Forming"@en ,
+                    "Umformen"@de .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#GeometricFeature
+:GeometricFeature rdf:type owl:Class ;
+                  rdfs:subClassOf <http://www.w3.org/ns/sosa/FeatureOfInterest> ;
+                  rdfs:label "Geometric Feature"@en ,
+                             "Geometrische Form"@de .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Joining
+:Joining rdf:type owl:Class ;
+         rdfs:subClassOf :ManufacturingProcess ;
+         rdfs:isDefinedBy "DIN 8550" ;
+         rdfs:label "Fügen"@de ,
+                    "Joining"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#LatheTool
+:LatheTool rdf:type owl:Class ;
+           rdfs:subClassOf :Tool ;
+           rdfs:label "Drehmeißel"@de ,
+                      "Lathe Tool"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#LayeredPlate
+:LayeredPlate rdf:type owl:Class ;
+              rdfs:subClassOf :Plate .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#MainSpindle
+:MainSpindle rdf:type owl:Class ;
+             rdfs:subClassOf <http://www.w3.org/ns/ssn/System> ;
+             rdfs:label "Hauptspindel"@de ,
+                        "Main Spindle"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#ManufacturingExperiment
+:ManufacturingExperiment rdf:type owl:Class ;
+                         rdfs:label "Fertigunstechnisches Experiment"@de ,
+                                    "Manufacturing Experiment"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#ManufacturingProcess
+:ManufacturingProcess rdf:type owl:Class ;
+                      rdfs:subClassOf <http://www.w3.org/2006/time#TemporalEntity> ;
+                      rdfs:isDefinedBy "DIN 8550"@de ;
+                      rdfs:label "Fertigungsprozess"@de ,
+                                 "Manufacturing Process"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#ManufacturingProcessPhase
+:ManufacturingProcessPhase rdf:type owl:Class ;
+                           rdfs:subClassOf <http://www.w3.org/2006/time#TemporalEntity> .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Microphone
+:Microphone rdf:type owl:Class ;
+            rdfs:subClassOf :TimeSeriesSensor .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#MillingCutter
+:MillingCutter rdf:type owl:Class ;
+               rdfs:subClassOf :Tool ;
+               rdfs:label "Fräser"@de ,
+                          "Milling Cutter"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#MillingMachine
+:MillingMachine rdf:type owl:Class ;
+                rdfs:subClassOf :ProductionMachine ;
+                rdfs:label "Fräsmaschine"@de ,
+                           "Milling Machine"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#MillingProcess
+:MillingProcess rdf:type owl:Class ;
+                rdfs:subClassOf :Cutting ;
+                rdfs:label "Fräsprozess"@de ,
+                           "Milling Prozess"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#NCAxis
+:NCAxis rdf:type owl:Class ;
+        rdfs:subClassOf :Axis ;
+        rdfs:label "NC Achse"@de ,
+                   "NC Axis"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Operator
+:Operator rdf:type owl:Class ;
+          rdfs:subClassOf <http://www.w3.org/2000/10/swap/pim/contact#Person> ;
+          rdfs:label "Maschinenbediener"@de ,
+                     "Operator"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Plate
+:Plate rdf:type owl:Class ;
+       rdfs:subClassOf :SemiManufacturedProduct .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Position
+:Position rdf:type owl:Class ;
+          rdfs:subClassOf :TimeSeriesProperty ;
+          rdfs:label "Position"@de ,
+                     "Position"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#PositionSensor
+:PositionSensor rdf:type owl:Class ;
+                rdfs:subClassOf :TimeSeriesSensor .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Pressure
+:Pressure rdf:type owl:Class ;
+          rdfs:subClassOf :TimeSeriesProperty ;
+          rdfs:label "Druck"@de ,
+                     "Pressure"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#PressureSensor
+:PressureSensor rdf:type owl:Class ;
+                rdfs:subClassOf :TimeSeriesSensor .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#PrimaryForming
+:PrimaryForming rdf:type owl:Class ;
+                rdfs:subClassOf :ManufacturingProcess ;
+                rdfs:isDefinedBy "DIN 8550" ;
+                rdfs:label "Primary Forming"@en ,
+                           "Urformen"@de .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#ProductionMachine
+:ProductionMachine rdf:type owl:Class ;
+                   rdfs:subClassOf <http://www.w3.org/ns/ssn/System> ;
+                   rdfs:label "Produktionsmaschine"@de .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#RawMaterial
+:RawMaterial rdf:type owl:Class ;
+             rdfs:subClassOf :Resource .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Resource
+:Resource rdf:type owl:Class .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#SemiManufacturedProduct
+:SemiManufacturedProduct rdf:type owl:Class ;
+                         rdfs:subClassOf :Resource .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Steel
+:Steel rdf:type owl:Class ;
+       rdfs:subClassOf :RawMaterial .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Temperature
+:Temperature rdf:type owl:Class ;
+             rdfs:subClassOf :TimeSeriesProperty ;
+             rdfs:label "Temperatur"@de ,
+                        "Temperature"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#TemperatureSensor
+:TemperatureSensor rdf:type owl:Class ;
+                   rdfs:subClassOf :TimeSeriesSensor .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#TimeSeriesProperty
+:TimeSeriesProperty rdf:type owl:Class ;
+                    rdfs:subClassOf <http://www.w3.org/ns/sosa/ObservableProperty> ;
+                    rdfs:label "Time-series Property"@en ,
+                               "Zeitreiheneigenschaft"@de .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#TimeSeriesSensor
+:TimeSeriesSensor rdf:type owl:Class ;
+                  rdfs:subClassOf <http://www.w3.org/ns/sosa/Sensor> ;
+                  rdfs:label "Time Series Sensor"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Tool
+:Tool rdf:type owl:Class ;
+      rdfs:subClassOf <http://www.w3.org/ns/ssn/System> ;
+      rdfs:label "Tool"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#ToolHolder
+:ToolHolder rdf:type owl:Class ;
+            rdfs:subClassOf <http://www.w3.org/ns/ssn/System> ;
+            rdfs:label "Tool Holder"@en ,
+                       "Werkzeughalter"@de .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#TurningMachine
+:TurningMachine rdf:type owl:Class ;
+                rdfs:subClassOf :ProductionMachine ;
+                rdfs:label "Drehmaschine"@de ,
+                           "Turning Machine"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#TurningProcess
+:TurningProcess rdf:type owl:Class ;
+                rdfs:subClassOf :Cutting ;
+                rdfs:label "Drehprozess"@de ,
+                           "Turning Process"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#Velocity
+:Velocity rdf:type owl:Class ;
+          rdfs:subClassOf :TimeSeriesProperty ;
+          rdfs:label "Geschwindigkeit"@de ,
+                     "Velocity"@en .
+
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#VibrationAssistedDrilling
+:VibrationAssistedDrilling rdf:type owl:Class ;
+                           rdfs:subClassOf :DrillingProcess .
+
+
+###  http://www.w3.org/2000/10/swap/pim/contact#Person
+<http://www.w3.org/2000/10/swap/pim/contact#Person> rdf:type owl:Class .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  http://ontologies.ift.at/production_systems.ttl/0.4#IFT_HuellerHille
+:IFT_HuellerHille rdf:type owl:NamedIndividual ,
+                           :ProductionMachine .
+
+
+###  Generated by the OWL API (version 4.2.8.20170104-2310) https://github.com/owlcs/owlapi

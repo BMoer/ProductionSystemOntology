@@ -1,0 +1,95 @@
+[PrefixDeclaration]
+:		http://ontologies.ift.at/production_systems.ttl/0.4#
+dc:		http://purl.org/dc/elements/1.1/
+owl:		http://www.w3.org/2002/07/owl#
+rdf:		http://www.w3.org/1999/02/22-rdf-syntax-ns#
+xml:		http://www.w3.org/XML/1998/namespace
+xsd:		http://www.w3.org/2001/XMLSchema#
+foaf:		http://xmlns.com/foaf/0.1/
+rdfs:		http://www.w3.org/2000/01/rdf-schema#
+
+[SourceDeclaration]
+sourceUri	datasource1
+connectionUrl	jdbc:postgresql://128.130.104.12:5901/postgres
+username	read_only_external
+password	H6LSMMj7FKFH9UwKAnQf
+driverClass	org.postgresql.Driver
+
+[MappingDeclaration] @collection [[
+mappingId	urn:Experiments
+target		:experiment/{experiment_id} a :ManufacturingExperiment ; rdfs:label {experiment_name} ; :defines :rig/{experiment_id} ; <http://www.w3.org/2006/time#hasBeginning> :{experiment_start} ; <http://www.w3.org/2006/time#hasEnd> :{experiment_stop} . 
+source		select experiment_id, experiment_name from boeing_db_structure.experiments
+
+mappingId	urn:ExperimentalRigs
+target		:rig/{experiment_id} a :ExperimentalRig ; <http://www.w3.org/ns/sosa/hosts> :sensor/{sensor} , :IFT_HuellerHille , :coolingsystem{cooling_system} , :suctionsystem/{suction_system} ; <http://www.w3.org/2006/time#hasBeginning> :{experiment_start} ; <http://www.w3.org/2006/time#hasEnd> :{experiment_stop} . 
+source		select experiment_id, cooling_system, suction_system, experiment_start, experiment_stop, sensor from boeing_db_structure.boreholes
+			join boeing_db_structure.experiments on boeing_db_structure.experiments.experiment_id=boreholes.experiment
+			join boeing_db_structure.sensor_deployments on boeing_db_structure.experiments.experiment_id=sensor_deployments.experiment
+
+mappingId	urn:Processes
+target		:process/{borehole_id} a :DrillingProcess ; :createsFeature :borehole/{borehole_id} ; :isExecutedBy :rig/{experiment} ; <http://www.w3.org/2006/time#hasBeginning> :{process_start} ; <http://www.w3.org/2006/time#hasEnd> :{process_stop} ; :usesTool :tool/{tool} ; :hasPhase :phase/{phase_id} . 
+source		select borehole_id, process_start, process_stop, experiment, tool, phase_id  from boeing_db_structure.boreholes
+			join boeing_db_structure.phases on boeing_db_structure.phases.borehole=boreholes.borehole_id
+
+mappingId	urn:Boreholes
+target		:borehole/{borehole_id} a :Borehole ; :holenumber {hole_number} ; :positionRow {position_row} ; :positionColumn {position_column} ; :isFeatureOf :plate/{coupon_id} ; <http://www.w3.org/ns/sosa/isFeatureOfInterestOf> :observation/{qualitycard_id} . 
+source		select borehole_id, hole_number, position_row, position_column, coupon_id from boeing_db_structure.boreholes
+			join boeing_db_structure.qualitycards on boeing_db_structure.boreholes.borehole_id=qualitycards.borehole
+
+mappingId	urn:Plates
+target		:plate/{coupon_id} a :Plate ; rdfs:label {coupon_id} ; :composedOf :plate/{layer_id} ; :thickness {thickness} . 
+source		select distinct coupon_id, layer_id, thickness from boeing_db_structure.boreholes
+			join boeing_db_structure.qualitycards on qualitycards.borehole=boreholes.borehole_id
+			join boeing_db_structure.layers on layers.layer_id=qualitycards.layer
+
+mappingId	urn:Layers
+target		:plate/{layer_id} a :Plate ; :rawMaterial {material} . 
+source		select distinct layer_id, material from boeing_db_structure.boreholes
+			join boeing_db_structure.qualitycards on qualitycards.borehole=boreholes.borehole_id
+			join boeing_db_structure.layers on layers.layer_id=qualitycards.layer
+
+mappingId	urn:Tools
+target		:tool/{tool_id} a :Drill ; rdfs:label {tool_name} ; <http://www.w3.org/ns/ssn/hasSubSystem> :fixture/{holder_name} ; :diameter {diameter} ; :vendor {vendor} ; owl:versionInfo {verison} . 
+source		select tool_id, holder_name, tool_name, vendor, diameter, verison from boeing_db_structure.tools
+
+mappingId	urn:ProcessPhase
+target		:phase/{phase_id} a :ManufacturingProcessPhase ; rdfs:label :{phase_name} ; <http://www.w3.org/2006/time#hasBeginning> :{phase_start} ; <http://www.w3.org/2006/time#hasEnd> :{phase_stop} ; :cuttingSpeed {v_c} ; :feedRatePerTooth {f_z} ; :peckingAmplitude {amp} ; :peckingFrequency {f_a} ; :toolRotationSpeed {n} ; :feedRate {v_f} . 
+source		select phase_id, phase_name, phase_start, phase_stop, v_c, f_z, amp, f, n, v_f from boeing_db_structure.phases
+
+mappingId	urn:Sensors
+target		:sensor/{sensor_id} a <http://www.w3.org/ns/sosa/Sensor> ; rdfs:label :{signaltype} ; :hasSamplingrate {samplingrate} ; :datatable {data_table} . 
+source		select sensor_id, samplingrate, signaltype, data_table from boeing_db_structure.sensors
+
+mappingId	urn:Sensors (Temp)
+target		:sensor/{sensor_id} a :TemperatureSensor ; rdfs:label {signaltype} ; :hasSamplingrate {samplingrate} . 
+source		select sensor_id, samplingrate, signaltype from boeing_db_structure.sensors where physical_quantity='Temperature'
+
+mappingId	urn:Sensors (Acceleration)
+target		:sensor/{sensor_id} a :AccelerationSensor ; rdfs:label {signaltype} ; :hasSamplingrate {samplingrate} . 
+source		select sensor_id, samplingrate, signaltype from boeing_db_structure.sensors where physical_quantity='Acceleration'
+
+mappingId	urn:Sensors (Flow)
+target		:sensor/{sensor_id} a :FlowSensor ; rdfs:label {signaltype} ; :hasSamplingrate {samplingrate} . 
+source		select sensor_id, samplingrate, signaltype from boeing_db_structure.sensors where physical_quantity='Flow'
+
+mappingId	urn:Sensors (Force)
+target		:sensor/{sensor_id} a :ForceSensor ; rdfs:label {signaltype} ; :hasSamplingrate {samplingrate} . 
+source		select sensor_id, samplingrate, signaltype from boeing_db_structure.sensors where physical_quantity='Force'
+
+mappingId	urn:Sensors (Microphone)
+target		:sensor/{sensor_id} a :Microphone ; rdfs:label {signaltype} ; :hasSamplingrate {samplingrate} . 
+source		select sensor_id, samplingrate, signaltype from boeing_db_structure.sensors where physical_quantity='Sound'
+
+mappingId	urn:Sensors (Position)
+target		:sensor/{sensor_id} a :PositionSensor ; rdfs:label {signaltype} ; :hasSamplingrate {samplingrate} . 
+source		select sensor_id, samplingrate, signaltype from boeing_db_structure.sensors where physical_quantity='Position'
+
+mappingId	urn:Sensors (Pressure)
+target		:sensor/{sensor_id} a :PressureSensor ; rdfs:label {signaltype} ; :hasSamplingrate {samplingrate} . 
+source		select sensor_id, samplingrate, signaltype from boeing_db_structure.sensors where physical_quantity='Pressure'
+
+mappingId	urn:Tools (Coated)
+target		:tool/{tool_id} a :CoatedDrill . 
+source		select tool_id from boeing_db_structure.tools where coating='True'
+]]
+
